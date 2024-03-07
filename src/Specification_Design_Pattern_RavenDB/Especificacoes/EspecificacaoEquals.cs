@@ -7,10 +7,10 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
         private readonly string _nomePropriedade;
         private readonly object _valor;
 
-        public EspecificacaoEquals(string nomePropriedade, object valor)
+        public EspecificacaoEquals(string nomePropriedade, string valor)
         {
             _nomePropriedade = nomePropriedade ?? throw new ArgumentNullException(nameof(nomePropriedade));
-            _valor = valor ?? throw new ArgumentNullException(nameof(valor));
+            _valor = ConverterValor(valor, typeof(T).GetProperty(nomePropriedade).PropertyType);
         }
 
         public override Expression<Func<T, bool>> ToExpression()

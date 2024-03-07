@@ -215,7 +215,7 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacaoMaior = new EspecificacaoMaior<Produto>("Preco", 2);
+                    var especificacaoMaior = new EspecificacaoMaior<Produto>("Preco", "2");
 
                     var query = Querys<Produto>.Filtrar(session, especificacaoMaior);
 
@@ -244,7 +244,7 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacaoMenor = new EspecificacaoMenor<Produto>("Preco", 2);
+                    var especificacaoMenor = new EspecificacaoMenor<Produto>("Preco", "2");
 
                     var query = Querys<Produto>.Filtrar(session, especificacaoMenor);
 

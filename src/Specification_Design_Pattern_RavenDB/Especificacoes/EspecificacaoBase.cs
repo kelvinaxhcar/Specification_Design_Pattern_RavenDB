@@ -23,5 +23,11 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
             var bodyCombinado = func.Invoke(substituirParametro.Visit(expressao1.Body), expressao2.Body);
             return Expression.Lambda<Func<T, bool>>(bodyCombinado, parametro1);
         }
+
+        public object ConverterValor(string valor, Type tipo)
+        {
+            var tipoBase = Nullable.GetUnderlyingType(tipo) ?? tipo;
+            return Convert.ChangeType(valor, tipoBase);
+        }
     }
 }
