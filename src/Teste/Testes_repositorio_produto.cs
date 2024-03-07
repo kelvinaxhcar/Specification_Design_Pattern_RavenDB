@@ -25,7 +25,9 @@ namespace Teste
                 using (var session = store.OpenSession())
                 {
                     var especificacao = new EspecificacaoEquals<Produto>(p => p.Preco, 1);
-                    var produtosFiltrados = Querys<Produto>.Filtrar(session, especificacao).ToList();
+                    var query = Querys<Produto>.Filtrar(session, especificacao);
+
+                    var produtosFiltrados = query.ToList();
 
                     // Assert
                     Assert.Single(produtosFiltrados);
@@ -52,8 +54,9 @@ namespace Teste
                 using (var session = store.OpenSession())
                 {
                     var especificacao = new EspecificacaoEquals<Produto>(p => p.Marca, "marca B");
-                    var produtosFiltrados = Querys<Produto>.Filtrar(session, especificacao).ToList();
+                    var query = Querys<Produto>.Filtrar(session, especificacao);
 
+                    var produtosFiltrados = query.ToList();
                     // Assert
                     Assert.Single(produtosFiltrados);
                     Assert.Equal("Produto 2", produtosFiltrados[0].Nome);
@@ -82,8 +85,9 @@ namespace Teste
                     var especificacaoMarca = new EspecificacaoEquals<Produto>(p => p.Marca, "marca A");
 
                     var especificacaoCombinada = new EspecificacaoE<Produto>(especificacaoNome, especificacaoMarca);
-                    var produtosFiltrados = Querys<Produto>.Filtrar(session, especificacaoCombinada).ToList();
+                    var query = Querys<Produto>.Filtrar(session, especificacaoCombinada);
 
+                    var produtosFiltrados = query.ToList();
                     // Assert
                     Assert.Single(produtosFiltrados);
                     Assert.Equal("Produto 1", produtosFiltrados[0].Nome);
@@ -112,8 +116,10 @@ namespace Teste
                     var especificacaoMarca = new EspecificacaoEquals<Produto>(p => p.Marca, "marca B");
 
                     var especificacaoCombinada = new EspecificacaoOu<Produto>(especificacaoNome, especificacaoMarca);
-                    var produtosFiltrados = Querys<Produto>.Filtrar(session, especificacaoCombinada).ToList();
+                    var query = Querys<Produto>.Filtrar(session, especificacaoCombinada);
 
+
+                    var produtosFiltrados = query.ToList();
                     // Assert
                     Assert.Equal(2, produtosFiltrados.Count);
                     Assert.Equal("Produto 1", produtosFiltrados[0].Nome);
