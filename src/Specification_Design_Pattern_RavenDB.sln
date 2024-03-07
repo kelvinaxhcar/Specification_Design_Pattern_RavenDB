@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specification_Design_Pattern_RavenDB", "Specification_Design_Pattern_RavenDB\Specification_Design_Pattern_RavenDB.csproj", "{5F2C7A30-E190-43F0-B2AC-B0D45CC270C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teste", "Teste\Teste.csproj", "{99BBEF7E-6E13-4D22-8256-A465282CAFA1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F2C7A30-E190-43F0-B2AC-B0D45CC270C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F2C7A30-E190-43F0-B2AC-B0D45CC270C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F2C7A30-E190-43F0-B2AC-B0D45CC270C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F2C7A30-E190-43F0-B2AC-B0D45CC270C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99BBEF7E-6E13-4D22-8256-A465282CAFA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99BBEF7E-6E13-4D22-8256-A465282CAFA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99BBEF7E-6E13-4D22-8256-A465282CAFA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99BBEF7E-6E13-4D22-8256-A465282CAFA1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FFDCF92A-D697-4236-AD58-CF8BCB706BEB}
+	EndGlobalSection
+EndGlobal
