@@ -18,9 +18,9 @@ namespace Specification_Design_Pattern_RavenDB.Controllers
         }
     }
 
-    public class Querys<T>
+    public static class Querys<T>
     {
-        public IQueryable<T> Filtrar(IDocumentSession session, params ISpecification<T>[] especificacao)
+        public static IQueryable<T> Filtrar(IDocumentSession session, params ISpecification<T>[] especificacao)
         {
             var query = session.Query<T>();
             foreach (var item in especificacao)

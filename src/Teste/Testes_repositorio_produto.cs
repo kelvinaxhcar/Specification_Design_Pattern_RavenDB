@@ -24,8 +24,7 @@ namespace Teste
                 using (var session = store.OpenSession())
                 {
                     var especificacao = new EspecificacaoEquals<Produto>(p => p.Nome, "produto 1");
-                    var repositorio = new Querys<Produto>();
-                    var produtosFiltrados = repositorio.Filtrar(session, especificacao).ToList();
+                    var produtosFiltrados = Querys<Produto>.Filtrar(session, especificacao).ToList();
 
                     // Assert
                     Assert.Single(produtosFiltrados);
@@ -52,8 +51,7 @@ namespace Teste
                 using (var session = store.OpenSession())
                 {
                     var especificacao = new EspecificacaoEquals<Produto>(p => p.Marca, "marca B");
-                    var repositorio = new Querys<Produto>();
-                    var produtosFiltrados = repositorio.Filtrar(session, especificacao).ToList();
+                    var produtosFiltrados = Querys<Produto>.Filtrar(session, especificacao).ToList();
 
                     // Assert
                     Assert.Single(produtosFiltrados);
@@ -83,9 +81,7 @@ namespace Teste
                     var especificacaoMarca = new EspecificacaoEquals<Produto>(p => p.Marca, "marca A");
 
                     var especificacaoCombinada = new EspecificacaoE<Produto>(especificacaoNome, especificacaoMarca);
-
-                    var repositorio = new Querys<Produto>();
-                    var produtosFiltrados = repositorio.Filtrar(session, especificacaoCombinada).ToList();
+                    var produtosFiltrados = Querys<Produto>.Filtrar(session, especificacaoCombinada).ToList();
 
                     // Assert
                     Assert.Single(produtosFiltrados);
@@ -115,9 +111,7 @@ namespace Teste
                     var especificacaoMarca = new EspecificacaoEquals<Produto>(p => p.Marca, "marca B");
 
                     var especificacaoCombinada = new EspecificacaoOu<Produto>(especificacaoNome, especificacaoMarca);
-
-                    var repositorio = new Querys<Produto>();
-                    var produtosFiltrados = repositorio.Filtrar(session, especificacaoCombinada).ToList();
+                    var produtosFiltrados = Querys<Produto>.Filtrar(session, especificacaoCombinada).ToList();
 
                     // Assert
                     Assert.Equal(2, produtosFiltrados.Count);
@@ -152,9 +146,7 @@ namespace Teste
 
                     var especificacaoNomeE = new EspecificacaoEquals<Produto>(p => p.Id, "1");
 
-                    var repositorio = new Querys<Produto>();
-
-                    var query = repositorio.Filtrar(session, especificacaoCombinadaOU, especificacaoNomeE );
+                    var query = Querys<Produto>.Filtrar(session, especificacaoCombinadaOU, especificacaoNomeE);
 
                     var produtosFiltrados = query.ToList();
                     // Assert
@@ -171,10 +163,10 @@ namespace Teste
                 // Arrange
                 using (var session = store.OpenSession())
                 {
-                    session.Store(new Produto { Id = "1", Nome = "Produto 1", Marca = "Marca A" , Cidade = "A1"});
-                    session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B" , Cidade = "A2" });
-                    session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C" , Cidade = "A3" });
-                    session.Store(new Produto { Id = "4", Nome = "Produto 3", Marca = "Marca D" , Cidade = "A4" });
+                    session.Store(new Produto { Id = "1", Nome = "Produto 1", Marca = "Marca A", Cidade = "A1" });
+                    session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B", Cidade = "A2" });
+                    session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C", Cidade = "A3" });
+                    session.Store(new Produto { Id = "4", Nome = "Produto 3", Marca = "Marca D", Cidade = "A4" });
                     session.SaveChanges();
                 }
 
@@ -187,10 +179,7 @@ namespace Teste
                     var especificacaoMarcaID = new EspecificacaoEquals<Produto>(p => p.Id, "3");
 
                     var especificacaoCombinadaOU = new EspecificacaoOu<Produto>(especificacaoNomeOU, especificacaoMarcaOU, especificacaoMarcaOUCidade, especificacaoMarcaID);
-
-                    var repositorio = new Querys<Produto>();
-
-                    var query = repositorio.Filtrar(session, especificacaoCombinadaOU);
+                    var query = Querys<Produto>.Filtrar(session, especificacaoCombinadaOU);
 
                     var produtosFiltrados = query.ToList();
                     // Assert
@@ -207,23 +196,19 @@ namespace Teste
                 // Arrange
                 using (var session = store.OpenSession())
                 {
-                    session.Store(new Produto { Id = "1", Nome = "Produto 1", Marca = "Marca A", Cidade = "A1" , Preco = 1});
-                    session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B", Cidade = "A2" , Preco = 2 });
-                    session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C", Cidade = "A3" , Preco = 3 });
-                    session.Store(new Produto { Id = "4", Nome = "Produto 3", Marca = "Marca D", Cidade = "A4" , Preco = 4 });
+                    session.Store(new Produto { Id = "1", Nome = "Produto 1", Marca = "Marca A", Cidade = "A1", Preco = 1 });
+                    session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B", Cidade = "A2", Preco = 2 });
+                    session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C", Cidade = "A3", Preco = 3 });
+                    session.Store(new Produto { Id = "4", Nome = "Produto 3", Marca = "Marca D", Cidade = "A4", Preco = 4 });
                     session.SaveChanges();
                 }
 
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacaoNomeOU = new EspecificacaoMaior<Produto>(p => p.Preco, 2);
+                    var especificacaoMaior = new EspecificacaoMaior<Produto>(p => p.Preco, 2);
 
-                    var especificacaoCombinadaOU = new EspecificacaoOu<Produto>(especificacaoNomeOU);
-
-                    var repositorio = new Querys<Produto>();
-
-                    var query = repositorio.Filtrar(session, especificacaoCombinadaOU);
+                    var query = Querys<Produto>.Filtrar(session, especificacaoMaior);
 
                     var produtosFiltrados = query.ToList();
                     // Assert
@@ -250,13 +235,9 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacaoNomeOU = new EspecificacaoMenor<Produto>(p => p.Preco, 2);
+                    var especificacaoMenor = new EspecificacaoMenor<Produto>(p => p.Preco, 2);
 
-                    var especificacaoCombinadaOU = new EspecificacaoOu<Produto>(especificacaoNomeOU);
-
-                    var repositorio = new Querys<Produto>();
-
-                    var query = repositorio.Filtrar(session, especificacaoCombinadaOU);
+                    var query = Querys<Produto>.Filtrar(session, especificacaoMenor);
 
                     var produtosFiltrados = query.ToList();
                     // Assert
