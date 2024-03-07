@@ -4,21 +4,22 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
 {
     public class EspecificacaoMenor<T> : Especificacao<T>
     {
-        private readonly Expression<Func<T, object>> _expressaoGetPropriedade;
+        private readonly string _nomePropriedade;
         private readonly object _valor;
 
-        public EspecificacaoMenor(Expression<Func<T, object>> expressaoGetPropriedade, object valor)
+        public EspecificacaoMenor(string nomePropriedade, object valor)
         {
-            _expressaoGetPropriedade = expressaoGetPropriedade ?? throw new ArgumentNullException(nameof(expressaoGetPropriedade));
+            _nomePropriedade = nomePropriedade ?? throw new ArgumentNullException(nameof(nomePropriedade));
             _valor = valor;
         }
 
         public override Expression<Func<T, bool>> ToExpression()
         {
-            var parametro = _expressaoGetPropriedade.Parameters[0];
-            var acessoPropriedade = _expressaoGetPropriedade.Body;
-
-            return ObterExpression(_valor, parametro, acessoPropriedade, Expression.LessThan);
+            var parametro = Expression.Parameter(typeof(T), "x");
+            var propriedade = Expression.Property(parametro, _nomePropriedade);
+            var constante = Expression.Constant(_valor);
+            var menorQue = Expression.LessThan(propriedade, Expression.Convert(constante, propriedade.Type));
+            return Expression.Lambda<Func<T, bool>>(menorQue, parametro);
         }
     }
 }
