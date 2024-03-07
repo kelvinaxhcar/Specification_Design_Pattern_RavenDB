@@ -24,7 +24,11 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacao = new EspecificacaoEquals<Produto>("Nome", "Produto 1");
+                    var propriedade = typeof(Produto)
+                        .GetProperties()
+                        .FirstOrDefault(x => x.Name.Equals("nome", StringComparison.CurrentCultureIgnoreCase));
+
+                    var especificacao = new EspecificacaoEquals<Produto>(propriedade.Name, "Produto 1");
                     var query = Querys<Produto>.Filtrar(session, especificacao);
 
                     var produtosFiltrados = query.ToList();

@@ -15,7 +15,6 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
 
         public override Expression<Func<T, bool>> ToExpression()
         {
-
             var parametro = Expression.Parameter(typeof(T), "x");
             var propriedade = Expression.Property(parametro, _nomePropriedade);
             var constante = Expression.Constant(_valor);
