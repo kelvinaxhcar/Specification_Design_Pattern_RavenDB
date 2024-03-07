@@ -1,6 +1,7 @@
 using Raven.TestDriver;
-using Specification_Design_Pattern_RavenDB.Controllers;
+using Specification_Design_Pattern_RavenDB.Entidades;
 using Specification_Design_Pattern_RavenDB.Especificacoes;
+using Specification_Design_Pattern_RavenDB.Querys;
 
 namespace Teste
 {
@@ -14,7 +15,7 @@ namespace Teste
                 // Arrange
                 using (var session = store.OpenSession())
                 {
-                    session.Store(new Produto { Id = "1", Nome = "Produto 1", Marca = "Marca A" });
+                    session.Store(new Produto { Id = "1", Nome = "Produto 1", Marca = "Marca A" , Preco = 1});
                     session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B" });
                     session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C" });
                     session.SaveChanges();
@@ -23,7 +24,7 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacao = new EspecificacaoEquals<Produto>(p => p.Nome, "produto 1");
+                    var especificacao = new EspecificacaoEquals<Produto>(p => p.Preco, 1);
                     var produtosFiltrados = Querys<Produto>.Filtrar(session, especificacao).ToList();
 
                     // Assert

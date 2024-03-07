@@ -2,7 +2,7 @@
 
 namespace Specification_Design_Pattern_RavenDB.Especificacoes
 {
-    public class EspecificacaoMaior<T> : EspecificacaoBase<T>
+    public class EspecificacaoMaior<T> : Especificacao<T>
     {
         private readonly Expression<Func<T, object>> _expressaoGetPropriedade;
         private readonly object _valor;
@@ -18,14 +18,7 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
             var parametro = _expressaoGetPropriedade.Parameters[0];
             var acessoPropriedade = _expressaoGetPropriedade.Body;
 
-            var tipoPropriedade = acessoPropriedade.Type;
-            var valorConvertido = Convert.ChangeType(_valor, tipoPropriedade);
-            var acessoPropriedadeConvertido = Expression.Convert(acessoPropriedade, valorConvertido.GetType());
-            var expressaoValor = Expression.Constant(valorConvertido);
-            var comparacao = Expression.GreaterThan(acessoPropriedadeConvertido, expressaoValor);
-            var lambda = Expression.Lambda<Func<T, bool>>(comparacao, parametro);
-
-            return lambda;
+            return ObterExpression(_valor, parametro, acessoPropriedade, Expression.GreaterThan);
         }
     }
 }

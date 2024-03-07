@@ -2,7 +2,7 @@
 
 namespace Specification_Design_Pattern_RavenDB.Especificacoes
 {
-    public class EspecificacaoOu<T> : EspecificacaoBase<T>
+    public class EspecificacaoOu<T> : Especificacao<T>
     {
         private readonly ISpecification<T>[] _especificacoes;
 
@@ -26,10 +26,7 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
                     expressaoCombinada = expressaoAtual;
                 else
                 {
-                    var parametro = expressaoCombinada.Parameters.Single();
-                    var substituirParametro = new SubstituirParametroVisitor(parametro, expressaoAtual.Parameters.Single());
-                    var bodyCombinado = Expression.OrElse(substituirParametro.Visit(expressaoCombinada.Body), expressaoAtual.Body);
-                    expressaoCombinada = Expression.Lambda<Func<T, bool>>(bodyCombinado, parametro);
+                    expressaoCombinada = ObterExpression(expressaoCombinada, expressaoAtual, Expression.OrElse);
                 }
             }
 

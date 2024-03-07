@@ -1,20 +1,27 @@
-﻿using Specification_Design_Pattern_RavenDB.Controllers;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Specification_Design_Pattern_RavenDB.Especificacoes
 {
-    public abstract class EspecificacaoBase<T> : ISpecification<T>
+    public class EspecificacaoBase<T>
     {
-        public abstract Expression<Func<T, bool>> ToExpression();
-
-        public EspecificacaoBase<T> E(EspecificacaoBase<T> especificacao)
+        public Expression<Func<T, bool>> ObterExpression(object valor, ParameterExpression parametro, Expression acessoPropriedade, Func<Expression, Expression, BinaryExpression> func)
         {
-            return new EspecificacaoE<T>(this, especificacao);
+            var tipoPropriedade = acessoPropriedade.Type;
+            var valorConvertido = Convert.ChangeType(valor, tipoPropriedade);
+            var acessoPropriedadeConvertido = Expression.Convert(acessoPropriedade, valorConvertido.GetType());
+
+            var expressaoValor = Expression.Constant(valorConvertido);
+            var comparacao = func.Invoke(acessoPropriedadeConvertido, expressaoValor);
+            return Expression.Lambda<Func<T, bool>>(comparacao, parametro);
         }
 
-        public EspecificacaoBase<T> Ou(EspecificacaoBase<T> especificacao)
+        public Expression<Func<T, bool>> ObterExpression(Expression<Func<T, bool>> expressao1, Expression<Func<T, bool>> expressao2, Func<Expression, Expression, BinaryExpression> func)
         {
-            return new EspecificacaoOu<T>(this, especificacao);
+            var parametro1 = expressao1.Parameters.Single();
+            var parametro2 = expressao2.Parameters.Single();
+            var substituirParametro = new SubstituirParametroVisitor(parametro1, parametro2);
+            var bodyCombinado = func.Invoke(substituirParametro.Visit(expressao1.Body), expressao2.Body);
+            return Expression.Lambda<Func<T, bool>>(bodyCombinado, parametro1);
         }
     }
 }
