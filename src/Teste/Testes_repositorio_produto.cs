@@ -24,7 +24,7 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacao = new EspecificacaoEquals<Produto>(p => p.Preco, 1);
+                    var especificacao = new EspecificacaoEquals<Produto>(p => p.Nome, "Produto 1");
                     var query = Querys<Produto>.Filtrar(session, especificacao);
 
                     var produtosFiltrados = query.ToList();
@@ -112,12 +112,10 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacaoNome = new EspecificacaoEquals<Produto>(p => p.Nome, "produto 1");
-                    var especificacaoMarca = new EspecificacaoEquals<Produto>(p => p.Marca, "marca B");
+                    var especificacaoNome = new EspecificacaoEquals<Produto>(p => p.Nome, "produto 1")
+                        .Ou(new EspecificacaoEquals<Produto>(p => p.Marca, "marca B"));
 
-                    var especificacaoCombinada = new EspecificacaoOu<Produto>(especificacaoNome, especificacaoMarca);
-                    var query = Querys<Produto>.Filtrar(session, especificacaoCombinada);
-
+                    var query = Querys<Produto>.Filtrar(session, especificacaoNome);
 
                     var produtosFiltrados = query.ToList();
                     // Assert
@@ -146,14 +144,11 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacaoNomeOU = new EspecificacaoEquals<Produto>(p => p.Nome, "produto 1");
-                    var especificacaoMarcaOU = new EspecificacaoEquals<Produto>(p => p.Marca, "marca B");
+                    var especificacaoNomeOU = new EspecificacaoEquals<Produto>(p => p.Nome, "produto 1")
+                        .Ou(new EspecificacaoEquals<Produto>(p => p.Marca, "marca B"))
+                        .E(new EspecificacaoEquals<Produto>(p => p.Id, "1"));
 
-                    var especificacaoCombinadaOU = new EspecificacaoOu<Produto>(especificacaoNomeOU, especificacaoMarcaOU);
-
-                    var especificacaoNomeE = new EspecificacaoEquals<Produto>(p => p.Id, "1");
-
-                    var query = Querys<Produto>.Filtrar(session, especificacaoCombinadaOU, especificacaoNomeE);
+                    var query = Querys<Produto>.Filtrar(session, especificacaoNomeOU);
 
                     var produtosFiltrados = query.ToList();
                     // Assert
@@ -181,8 +176,11 @@ namespace Teste
                 using (var session = store.OpenSession())
                 {
                     var especificacaoNomeOU = new EspecificacaoEquals<Produto>(p => p.Nome, "produto 1");
+
                     var especificacaoMarcaOU = new EspecificacaoEquals<Produto>(p => p.Marca, "marca B");
+
                     var especificacaoMarcaOUCidade = new EspecificacaoEquals<Produto>(p => p.Cidade, "A1");
+
                     var especificacaoMarcaID = new EspecificacaoEquals<Produto>(p => p.Id, "3");
 
                     var especificacaoCombinadaOU = new EspecificacaoOu<Produto>(especificacaoNomeOU, especificacaoMarcaOU, especificacaoMarcaOUCidade, especificacaoMarcaID);

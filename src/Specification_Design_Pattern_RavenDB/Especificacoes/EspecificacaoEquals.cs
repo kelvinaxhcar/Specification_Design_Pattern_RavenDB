@@ -2,7 +2,7 @@
 
 namespace Specification_Design_Pattern_RavenDB.Especificacoes
 {
-    public class EspecificacaoEquals<T> : EspecificacaoBase<T>, ISpecification<T>
+    public class EspecificacaoEquals<T> : Especificacao<T>, ISpecification<T>
     {
         private readonly Expression<Func<T, object>> _expressaoGetPropriedade;
         private readonly object _valor;
@@ -13,7 +13,7 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
             _valor = valor ?? throw new ArgumentNullException(nameof(valor));
         }
 
-        public Expression<Func<T, bool>> ToExpression()
+        public override Expression<Func<T, bool>> ToExpression()
         {
             var parametro = _expressaoGetPropriedade.Parameters[0];
             var acessoPropriedade = _expressaoGetPropriedade.Body;

@@ -2,7 +2,7 @@
 
 namespace Specification_Design_Pattern_RavenDB.Especificacoes
 {
-    public class EspecificacaoBase<T>
+    public class EspecificacaoBase<T> 
     {
         public Expression<Func<T, bool>> ObterExpression(object valor, ParameterExpression parametro, Expression acessoPropriedade, Func<Expression, Expression, BinaryExpression> func)
         {
