@@ -2,12 +2,12 @@
 
 namespace Specification_Design_Pattern_RavenDB.Especificacoes
 {
-    public class EspecificacaoEquals<T> : Especificacao<T>
+    public class EspecificacaoStartsWith<T> : Especificacao<T>
     {
         private readonly string _nomePropriedade;
         private readonly object _valor;
 
-        public EspecificacaoEquals(string nomePropriedade, string valor)
+        public EspecificacaoStartsWith(string nomePropriedade, string valor)
         {
             _nomePropriedade = nomePropriedade ?? throw new ArgumentNullException(nameof(nomePropriedade));
             _valor = ConverterValor(valor, typeof(T).GetProperty(nomePropriedade).PropertyType);
@@ -18,8 +18,9 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
             var parametro = Expression.Parameter(typeof(T), "x");
             var propriedade = Expression.Property(parametro, _nomePropriedade);
             var constante = Expression.Constant(_valor);
-            var igualdade = Expression.Equal(propriedade, constante);
-            return Expression.Lambda<Func<T, bool>>(igualdade, parametro);
+            var startsWithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
+            var startsWithExpression = Expression.Call(propriedade, startsWithMethod, Expression.Convert(constante, typeof(string)));
+            return Expression.Lambda<Func<T, bool>>(startsWithExpression, parametro);
         }
     }
 }

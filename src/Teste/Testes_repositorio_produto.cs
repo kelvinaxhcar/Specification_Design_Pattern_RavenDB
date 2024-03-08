@@ -41,6 +41,39 @@ namespace Teste
         }
 
         [Fact]
+        public void deve_ober_por_nome_StartsWith()
+        {
+            using (var store = GetDocumentStore())
+            {
+                // Arrange
+                using (var session = store.OpenSession())
+                {
+                    session.Store(new Produto { Id = "1", Nome = "Produto 1", Marca = "Marca A", Preco = 1 });
+                    session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B" });
+                    session.Store(new Produto { Id = "3", Nome = "Teste 3", Marca = "Marca C" });
+                    session.SaveChanges();
+                }
+
+                // Act
+                using (var session = store.OpenSession())
+                {
+                    var propriedade = typeof(Produto)
+                        .GetProperties()
+                        .FirstOrDefault(x => x.Name.Equals("nome", StringComparison.CurrentCultureIgnoreCase));
+
+                    var especificacao = new EspecificacaoStartsWith<Produto>(propriedade.Name, "Te");
+                    var query = Querys<Produto>.Filtrar(session, especificacao);
+
+                    var produtosFiltrados = query.ToList();
+
+                    // Assert
+                    Assert.Single(produtosFiltrados);
+                    Assert.Equal("Teste 3", produtosFiltrados[0].Nome);
+                }
+            }
+        }
+
+        [Fact]
         public void deve_ober_por_marca()
         {
             using (var store = GetDocumentStore())
