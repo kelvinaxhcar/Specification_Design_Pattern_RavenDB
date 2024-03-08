@@ -27,7 +27,24 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
         public object ConverterValor(string valor, Type tipo)
         {
             var tipoBase = Nullable.GetUnderlyingType(tipo) ?? tipo;
+
+            if (tipo.IsEnum && !string.IsNullOrWhiteSpace(valor))
+            {
+                return int.Parse(valor);
+            }
             return Convert.ChangeType(valor, tipoBase);
+        }
+        public object ConverterValor(object valor, Type tipo)
+        {
+            if (valor == null)
+                throw new ArgumentNullException(nameof(valor));
+
+            if (tipo.IsGenericType && tipo.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                tipo = Nullable.GetUnderlyingType(tipo);
+            }
+
+            return Convert.ChangeType(valor, tipo);
         }
     }
 }

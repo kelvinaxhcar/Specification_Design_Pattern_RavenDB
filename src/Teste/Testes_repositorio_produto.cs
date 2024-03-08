@@ -1,21 +1,28 @@
 using Raven.TestDriver;
 using Specification_Design_Pattern_RavenDB.Entidades;
 using Specification_Design_Pattern_RavenDB.Especificacoes;
+using Specification_Design_Pattern_RavenDB.Filters;
 using Specification_Design_Pattern_RavenDB.Querys;
 
 namespace Teste
 {
     public class Testes_repositorio_produto : RavenTestDriver
     {
+        private readonly ServicoSpecification _servicoSpecification = new ServicoSpecification();
+        public Testes_repositorio_produto()
+        {
+            
+        }
+
         [Fact]
-        public void deve_ober_por_nome()
+        public void deve_ober_por_quary_completa()
         {
             using (var store = GetDocumentStore())
             {
                 // Arrange
                 using (var session = store.OpenSession())
                 {
-                    session.Store(new Produto { Id = "1", Nome = "Produto 1", Marca = "Marca A" , Preco = 1});
+                    session.Store(new Produto { Id = "1", Nome = "Teste", Marca = "Marca A", Preco = 1, Data = new DateTime(2024, 03, 07) , Tipo = Tipo.Producao});
                     session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B" });
                     session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C" });
                     session.SaveChanges();
@@ -24,18 +31,143 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var propriedade = typeof(Produto)
-                        .GetProperties()
-                        .FirstOrDefault(x => x.Name.Equals("nome", StringComparison.CurrentCultureIgnoreCase));
+                    var filtros = new FiltroObterTodosExemplo("?tipo=%3D1&nome=%3DTeste&data=2024-03-01...2024-03-08");
+                    var especificacao = _servicoSpecification.ObterQyerys<Produto>(filtros.FilterQueries);
 
-                    var especificacao = new EspecificacaoEquals<Produto>(propriedade.Name, "Produto 1");
+                    var query = Querys<Produto>.Filtrar(session, especificacao);
+
+                    var querystring = query.ToString();
+
+                    var produtosFiltrados = query.ToList();
+
+                    // Assert
+                    Assert.Single(produtosFiltrados);
+                    Assert.Equal("Teste", produtosFiltrados[0].Nome);
+                    Assert.Equal("from 'Produtos' where (Tipo = $p0) and (Nome = $p1) and (Data between $p2 and $p3)", querystring);
+                }
+            }
+        }
+
+        [Fact]
+        public void deve_ober_por_nome_ao_executar_EspecificacaoEquals()
+        {
+            using (var store = GetDocumentStore())
+            {
+                // Arrange
+                using (var session = store.OpenSession())
+                {
+                    session.Store(new Produto { Id = "1", Nome = "Teste", Marca = "Marca A", Preco = 1, Data = new DateTime(2024, 03, 07) });
+                    session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B" });
+                    session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C" });
+                    session.SaveChanges();
+                }
+
+                // Act
+                using (var session = store.OpenSession())
+                {
+                    var filtros = new FiltroObterTodosExemplo("?nome=%3DTeste");
+                    var especificacao = _servicoSpecification.ObterQyerys<Produto>(filtros.FilterQueries);
+
                     var query = Querys<Produto>.Filtrar(session, especificacao);
 
                     var produtosFiltrados = query.ToList();
 
                     // Assert
                     Assert.Single(produtosFiltrados);
-                    Assert.Equal("Produto 1", produtosFiltrados[0].Nome);
+                    Assert.Equal("Teste", produtosFiltrados[0].Nome);
+                }
+            }
+        }
+
+        [Fact]
+        public void deve_ober_por_data_ao_executar_EspecificacaoBetween()
+        {
+            using (var store = GetDocumentStore())
+            {
+                // Arrange
+                using (var session = store.OpenSession())
+                {
+                    session.Store(new Produto { Id = "1", Nome = "Teste", Marca = "Marca A", Preco = 1, Data = new DateTime(2024, 03, 07) });
+                    session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B" });
+                    session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C" });
+                    session.SaveChanges();
+                }
+
+                // Act
+                using (var session = store.OpenSession())
+                {
+                    var filtros = new FiltroObterTodosExemplo("?data=2024-03-01...2024-03-08");
+                    var especificacao = _servicoSpecification.ObterQyerys<Produto>(filtros.FilterQueries);
+
+                    var query = Querys<Produto>.Filtrar(session, especificacao);
+
+                    var produtosFiltrados = query.ToList();
+
+                    // Assert
+                    Assert.Single(produtosFiltrados);
+                    Assert.Equal("Teste", produtosFiltrados[0].Nome);
+                }
+            }
+        }
+
+        [Fact]
+        public void deve_ober_por_enum_ao_executar_EspecificacaoEquals()
+        {
+            using (var store = GetDocumentStore())
+            {
+                // Arrange
+                using (var session = store.OpenSession())
+                {
+                    session.Store(new Produto { Id = "1", Nome = "Teste", Marca = "Marca A", Preco = 1, Data = new DateTime(2024, 03, 07), Tipo = Tipo.Producao });
+                    session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B" });
+                    session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C" });
+                    session.SaveChanges();
+                }
+
+                // Act
+                using (var session = store.OpenSession())
+                {
+                    var filtros = new FiltroObterTodosExemplo("?tipo=%3D1");
+                    var especificacao = _servicoSpecification.ObterQyerys<Produto>(filtros.FilterQueries);
+
+                    var query = Querys<Produto>.Filtrar(session, especificacao);
+
+                    var produtosFiltrados = query.ToList();
+
+                    // Assert
+                    Assert.Single(produtosFiltrados);
+                    Assert.Equal("Teste", produtosFiltrados[0].Nome);
+                }
+            }
+        }
+
+        [Fact]
+        public void deve_ober_por_enum_ao_executar_EspecificacaoGreatThen()
+        {
+            using (var store = GetDocumentStore())
+            {
+                // Arrange
+                using (var session = store.OpenSession())
+                {
+                    session.Store(new Produto { Id = "1", Nome = "Teste", Marca = "Marca A", Preco = 1, Data = new DateTime(2024, 03, 07), Tipo = Tipo.Producao });
+                    session.Store(new Produto { Id = "2", Nome = "Produto 2", Marca = "Marca B" , Preco = 2 });
+                    session.Store(new Produto { Id = "3", Nome = "Produto 3", Marca = "Marca C" ,Preco = 3 });
+                    session.SaveChanges();
+                }
+
+                // Act
+                using (var session = store.OpenSession())
+                {
+                    var filtros = new FiltroObterTodosExemplo("preco=<2");
+                    var especificacao = _servicoSpecification.ObterQyerys<Produto>(filtros.FilterQueries);
+
+                    var query = Querys<Produto>.Filtrar(session, especificacao);
+
+                    var produtosFiltrados = query.ToList();
+
+                    // Assert
+                    Assert.Single(produtosFiltrados);
+                    Assert.Equal("Teste", produtosFiltrados[0].Nome);
                 }
             }
         }
@@ -100,6 +232,7 @@ namespace Teste
                 }
             }
         }
+
 
         [Fact]
         public void deve_ober_por_nome_e_marca()
@@ -248,7 +381,7 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacaoMaior = new EspecificacaoMaior<Produto>("Preco", "2");
+                    var especificacaoMaior = new EspecificacaoGreatThen<Produto>("Preco", "2");
 
                     var query = Querys<Produto>.Filtrar(session, especificacaoMaior);
 
@@ -277,7 +410,7 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacaoMenor = new EspecificacaoMenor<Produto>("Preco", "2");
+                    var especificacaoMenor = new EspecificacaoLessThen<Produto>("Preco", "2");
 
                     var query = Querys<Produto>.Filtrar(session, especificacaoMenor);
 
