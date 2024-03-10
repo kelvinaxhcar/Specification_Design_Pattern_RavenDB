@@ -18,7 +18,7 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
             var parametro = Expression.Parameter(typeof(T), "x");
             var propriedade = Expression.Property(parametro, _nomePropriedade);
             var constante = Expression.Constant(_valor);
-            var startsWithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
+            var startsWithMethod = typeof(string).GetMethod("StartsWith", [typeof(string)])!;
             var startsWithExpression = Expression.Call(propriedade, startsWithMethod, Expression.Convert(constante, typeof(string)));
             return Expression.Lambda<Func<T, bool>>(startsWithExpression, parametro);
         }
