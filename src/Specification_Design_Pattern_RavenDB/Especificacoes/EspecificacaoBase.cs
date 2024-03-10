@@ -4,6 +4,7 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
 {
     public class EspecificacaoBase<T> 
     {
+        public static readonly Dictionary<string, Type> PropertyInfoCache = new Dictionary<string, Type>();
         public Expression<Func<T, bool>> ObterExpression(object valor, ParameterExpression parametro, Expression acessoPropriedade, Func<Expression, Expression, BinaryExpression> func)
         {
             var tipoPropriedade = acessoPropriedade.Type;
@@ -28,6 +29,24 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
         {
             var tipoBase = Nullable.GetUnderlyingType(tipo) ?? tipo;
             return Convert.ChangeType(valor, tipoBase);
+        }
+
+        public static Type ObterTipoDaPropriedade(string propertyName)
+        {
+            var propertyNameLower = propertyName.ToLower();
+            if (!PropertyInfoCache.TryGetValue(propertyNameLower, out var propertyInfo))
+            {
+                propertyInfo = typeof(T)
+                    .GetProperties()
+                    .FirstOrDefault(x => x.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase))?
+                    .PropertyType;
+
+                if (propertyInfo == null)
+                    throw new Exception($"Property Type não encontrado para [{propertyName}]");
+
+                PropertyInfoCache[propertyNameLower] = propertyInfo;
+            }
+            return propertyInfo;
         }
     }
 }

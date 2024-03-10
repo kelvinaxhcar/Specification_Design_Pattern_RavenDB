@@ -118,8 +118,8 @@ namespace Teste
                 // Act
                 using (var session = store.OpenSession())
                 {
-                    var especificacaoNome = new EspecificacaoEquals<Produto>("Nome", "produto 1");
-                    var especificacaoMarca = new EspecificacaoEquals<Produto>("Marca", "marca A");
+                    var especificacaoNome = new EspecificacaoEquals<Produto>("nome", "produto 1");
+                    var especificacaoMarca = new EspecificacaoEquals<Produto>("Nome", "produto 1");
 
                     var especificacaoCombinada = new EspecificacaoE<Produto>(especificacaoNome, especificacaoMarca);
                     var query = Querys<Produto>.Filtrar(session, especificacaoCombinada);

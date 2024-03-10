@@ -10,7 +10,7 @@ namespace Specification_Design_Pattern_RavenDB.Especificacoes
         public EspecificacaoStartsWith(string nomePropriedade, string valor)
         {
             _nomePropriedade = nomePropriedade ?? throw new ArgumentNullException(nameof(nomePropriedade));
-            _valor = ConverterValor(valor, typeof(T).GetProperty(nomePropriedade).PropertyType);
+            _valor = ConverterValor(valor, ObterTipoDaPropriedade(nomePropriedade));
         }
 
         public override Expression<Func<T, bool>> ToExpression()
