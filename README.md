@@ -1,6 +1,6 @@
-# RavenDB.Specifications 🚀
+# RavenDB-Specifications 🚀
 
-[![NuGet](https://img.shields.io/nuget/v/RavenDB.Specifications.svg)](https://www.nuget.org/packages/RavenDB.Specifications)
+[![NuGet](https://img.shields.io/nuget/v/RavenDB-Specifications.svg)](https://www.nuget.org/packages/RavenDB-Specifications)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/Build-Success-brightgreen.svg)]()
 
@@ -29,7 +29,7 @@ RavenDB's LINQ provider is powerful but has specific behaviors (like `.Search()`
 
 ### 📦 Installation
 ```bash
-dotnet add package RavenDB.Specifications
+dotnet add package RavenDB-Specifications
 ```
 
 ### 💻 Quick Example
@@ -72,7 +72,7 @@ O provedor LINQ do RavenDB é excelente, mas exige cuidados específicos (como o
 
 ### 📦 Instalação
 ```bash
-dotnet add package RavenDB.Specifications
+dotnet add package RavenDB-Specifications
 ```
 
 ### 💻 Exemplo Rápido

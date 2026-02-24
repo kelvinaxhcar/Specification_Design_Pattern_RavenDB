@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>RavenDB.Specifications</PackageId>
+    <PackageId>RavenDB-Specifications</PackageId>
     <Version>1.0.0</Version>
     <Authors>kelvinaxhcar</Authors>
     <Description>Robust library implementing the Specification Design Pattern specifically for RavenDB. This library allows you to decouple business logic from data access infrastructure, providing reusable, testable, and combinable queries.</Description>
