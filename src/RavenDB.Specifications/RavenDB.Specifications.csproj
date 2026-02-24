@@ -4,7 +4,23 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>RavenDB.Specifications</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>kelvinaxhcar</Authors>
+    <Description>Robust library implementing the Specification Design Pattern specifically for RavenDB. This library allows you to decouple business logic from data access infrastructure, providing reusable, testable, and combinable queries.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/kelvinaxhcar/Specification_Design_Pattern_RavenDB</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/kelvinaxhcar/Specification_Design_Pattern_RavenDB</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>RavenDB;Specification;Pattern;Linq;Search;Database</PackageTags>
+    <PackageReleaseNotes>Initial release of RavenDB.Specifications.</PackageReleaseNotes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="RavenDB.Client" Version="6.0.100" />

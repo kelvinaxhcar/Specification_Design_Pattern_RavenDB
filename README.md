@@ -1,75 +1,108 @@
-# RavenDB Specification Pattern
+# RavenDB.Specifications 🚀
 
-Uma biblioteca robusta que implementa o **Specification Design Pattern** especificamente para o **RavenDB**. Esta biblioteca permite desacoplar a lógica de negócio (critérios de filtragem) da infraestrutura de acesso a dados, proporcionando consultas reutilizáveis, testáveis e combináveis.
+[![NuGet](https://img.shields.io/nuget/v/RavenDB.Specifications.svg)](https://www.nuget.org/packages/RavenDB.Specifications)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/badge/Build-Success-brightgreen.svg)]()
 
-## 🚀 O Projeto
-
-Este projeto fornece uma abstração sobre as consultas do RavenDB, permitindo que você defina critérios de busca como objetos de "Especificação". Ele resolve problemas comuns de repetição de lógica de `Where` e lida automaticamente com particularidades do RavenDB, como o uso de `Search` para buscas parciais de texto (contendo).
-
-### Principais Funcionalidades:
-- **Especificações Base**: `Equal`, `NotEqual`, `GreaterThan`, `LessThan`, etc.
-- **Especificação de Busca**: `ContainsSpecification` integrada com o comando `.Search()` do RavenDB.
-- **Composição Lógica**: Combine especificações usando `And`, `Or` e `Not`.
-- **Conversor SQL**: Capacidade de converter strings SQL simples em objetos de Especificação.
-- **Helpers de Consulta**: Métodos utilitários para aplicar especificações em sessões síncronas e assíncronas.
+A robust library implementing the **Specification Design Pattern** specifically for **RavenDB**. Decentralize your business logic from data access infrastructure with reusable, testable, and combinable queries.
 
 ---
 
-## 💡 Casos de Uso
-
-1.  **Regras de Negócio Reutilizáveis**: Defina uma especificação `ProductIsAvailable` uma única vez e use-a em múltiplos controladores ou serviços.
-2.  **Consultas Dinâmicas**: Construa filtros complexos em tempo de execução baseados em inputs do usuário sem sujar o código com múltiplos `if (string.IsNullOrEmpty(...))`.
-3.  **Abstração de Busca**: Use `Contains` sem se preocupar com a `NotSupportedException` do RavenDB, pois a biblioteca converte isso internamente para a API de busca otimizada.
-4.  **Testabilidade**: Teste suas regras de filtragem isoladamente da base de dados, verificando apenas se a expressão gerada está correta.
+### 🌐 Language / Idioma
+[English](#-english-version) | [Português](#-versão-em-português)
 
 ---
 
-## 🛠️ Como Usar
+## 🇺🇸 English Version
 
-### 1. Definindo uma Especificação Simples
-Você pode usar as especificações pré-definidas ou criar a sua:
+### 🚀 Why Use This?
+RavenDB's LINQ provider is powerful but has specific behaviors (like `.Search()` for partial matches). This library abstracts those complexities, allowing you to define business rules as "Specifications" that are:
+- **Reusable**: Use the same filter across multiple services.
+- **Testable**: Verify logic without a database connection.
+- **Combinable**: Merge logic with `And`, `Or`, and `Not`.
 
-```csharp
-var spec = new EqualSpecification<Product>("Brand", "Dell");
+### 🛠️ Key Features
+- **Search Abstraction**: Automatically converts `Contains` criteria to RavenDB's `.Search()` API.
+- **SQL-to-Spec**: Dynamic filtering using simple SQL-like strings.
+- **Async Support**: Native support for `IAsyncDocumentSession`.
+- **Thread-Safe**: Designed for modern high-concurrency applications.
+
+### 📦 Installation
+```bash
+dotnet add package RavenDB.Specifications
 ```
 
-### 2. Combinando Especificações
-A verdadeira força do padrão reside na composição:
-
+### 💻 Quick Example
 ```csharp
+// 1. Define
 var brandSpec = new EqualSpecification<Product>("Brand", "Dell");
-var priceSpec = new LessThanSpecification<Product>("Price", 1000);
+var searchSpec = new ContainsSpecification<Product>("Name", "Monitor");
 
-// Combinação AND
-var affordableDell = brandSpec.And(priceSpec);
+// 2. Combine
+var finalSpec = brandSpec.And(searchSpec);
+
+// 3. Execute
+var results = await Queries<Product>.Filter(session, finalSpec).ToListAsync();
 ```
 
-### 3. Executando a Consulta
-Use o helper `Queries<T>` para aplicar as especificações à sua sessão do RavenDB:
-
+### 🔍 SQL Filtering
+Convert SQL-style strings directly into specifications:
 ```csharp
-using var session = documentStore.OpenAsyncSession();
+string sql = "Brand = 'Dell' AND (Price < 1000 OR Category IN ('Electronics', 'IT')) AND Name LIKE '%Monitor%'";
+var spec = SqlToSpecificationConverter.Convert<Product>(sql);
 
-// Aplicando filtros
-var products = await Queries<Product>
-    .Filter(session, affordableDell)
-    .ToListAsync();
-```
-
-### 4. Usando Filtro via SQL
-A biblioteca também suporta a conversão de filtros em formato SQL para especificações:
-
-```csharp
-string sqlFilter = "Brand = 'Dell' AND Price < 1000";
-var products = await Queries<Product>
-    .FilterBySql(session, sqlFilter)
-    .ToListAsync();
+var products = await Queries<Product>.Filter(session, spec).ToListAsync();
 ```
 
 ---
 
-## 🏗️ Estrutura da Solução
+## 🇧🇷 Versão em Português
 
-- `RavenDB.Specifications`: A biblioteca principal contendo os padrões e helpers.
-- `RavenDB.Specifications.Demo`: Uma API de exemplo demonstrando a integração com ASP.NET Core.
-- `RavenDB.Specifications.Tests`: Testes unitários para validar a lógica das especificações.
+### 🚀 Por que usar?
+O provedor LINQ do RavenDB é excelente, mas exige cuidados específicos (como o uso de `.Search()` para buscas parciais). Esta biblioteca abstrai essa complexidade, permitindo definir regras de negócio como "Especificações" que são:
+- **Reutilizáveis**: Use o mesmo filtro em múltiplos serviços.
+- **Testáveis**: Valide a lógica sem precisar de conexão com o banco.
+- **Combináveis**: Una lógicas complexas com `And`, `Or` e `Not`.
+
+### 🛠️ Funcionalidades Principais
+- **Abstração de Busca**: Converte automaticamente critérios `Contains` para a API `.Search()` do RavenDB.
+- **SQL-to-Spec**: Filtros dinâmicos via strings SQL simples.
+- **Suporte Assíncrono**: Totalmente compatível com `IAsyncDocumentSession`.
+- **Thread-Safe**: Pronto para aplicações modernas escaláveis.
+
+### 📦 Instalação
+```bash
+dotnet add package RavenDB.Specifications
+```
+
+### 💻 Exemplo Rápido
+```csharp
+// 1. Definir
+var marcaSpec = new EqualSpecification<Product>("Brand", "Dell");
+var buscaSpec = new ContainsSpecification<Product>("Name", "Monitor");
+
+// 2. Combinar
+var specFinal = marcaSpec.And(buscaSpec);
+
+// 3. Executar
+var resultados = await Queries<Product>.Filter(session, specFinal).ToListAsync();
+```
+
+### 🔍 Filtros via SQL
+Converta strings no estilo SQL diretamente para especificações:
+```csharp
+string sql = "Brand = 'Dell' AND (Price < 1000 OR Category IN ('Electronics', 'IT')) AND Name LIKE '%Monitor%'";
+var spec = SqlToSpecificationConverter.Convert<Product>(sql);
+
+var produtos = await Queries<Product>.Filter(session, spec).ToListAsync();
+```
+
+---
+
+## 🏗️ Solution Structure
+- `RavenDB.Specifications`: The core library.
+- `RavenDB.Specifications.Demo`: ASP.NET Core API showcasing integration.
+- `RavenDB.Specifications.Tests`: Comprehensive test suite.
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
