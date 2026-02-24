@@ -1,13 +1,13 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
-namespace Specification_Design_Pattern_RavenDB.Especificacoes
+namespace Specification_Design_Pattern_RavenDB.Specifications
 {
-    public class SubstituirParametroVisitor : ExpressionVisitor
+    public class ReplaceParameterVisitor : ExpressionVisitor
     {
         private readonly ParameterExpression _from;
         private readonly ParameterExpression _to;
 
-        public SubstituirParametroVisitor(ParameterExpression from, ParameterExpression to)
+        public ReplaceParameterVisitor(ParameterExpression from, ParameterExpression to)
         {
             _from = from;
             _to = to;
