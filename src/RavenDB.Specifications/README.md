@@ -1,6 +1,6 @@
 # RavenDB.Specifications 🚀
 
-[![NuGet](https://img.shields.io/nuget/v/RavenDB.Specifications.svg)](https://www.nuget.org/packages/RavenDB.Specifications)
+[![NuGet](https://img.shields.io/nuget/v/RavenDB-Specifications.svg)](https://www.nuget.org/packages/RavenDB.Specifications)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A robust library implementing the **Specification Design Pattern** specifically for **RavenDB**. Decentralize your business logic from data access infrastructure with reusable, testable, and combinable queries.
@@ -55,7 +55,7 @@ var products = await Queries<Product>.Filter(session, spec).ToListAsync();
 ## 📦 Installation
 
 ```bash
-dotnet add package RavenDB.Specifications
+dotnet add package RavenDB-Specifications
 ```
 
 ## 📄 License
