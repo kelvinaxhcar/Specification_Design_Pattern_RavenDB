@@ -1,0 +1,28 @@
+name: .NET
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+
+      - name: Restore dependencies
+        run: dotnet restore src/RavenDB.Specifications/RavenDB.Specifications.csproj
+
+      - name: Build the project
+        run: dotnet build src/RavenDB.Specifications/RavenDB.Specifications.csproj --no-restore -c Release
+
+      - name: Create NuGet package
+        run: dotnet pack src/RavenDB.Specifications/RavenDB.Specifications.csproj --no-build -c Release -o out
+
+      - name: Push to NuGet
+        run: dotnet nuget push out/*.nupkg --api-key ${{ secrets.HANGFIRE_RAVEN_6X_DB_NUGET }} --source "https://api.nuget.org/v3/index.json" --skip-duplicate
