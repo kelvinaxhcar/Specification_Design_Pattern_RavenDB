@@ -241,5 +241,89 @@ namespace RavenDB.Specifications.Tests
                 Assert.Equal("P3", filteredProducts[0].Name);
             }
         }
+
+        [Fact]
+        public void Should_Filter_By_Sql_With_IsNull()
+        {
+            using var store = GetDocumentStore();
+            using (var session = store.OpenSession())
+            {
+                session.Store(new Product { Id = "1", Name = "P1", Brand = null });
+                session.Store(new Product { Id = "2", Name = "P2", Brand = "B" });
+                session.SaveChanges();
+            }
+
+            using (var session = store.OpenSession())
+            {
+                var filteredProducts = Queries<Product>.FilterBySql(session, "Brand IS NULL").ToList();
+
+                Assert.Single(filteredProducts);
+                Assert.Equal("P1", filteredProducts[0].Name);
+            }
+        }
+
+        [Fact]
+        public void Should_Filter_By_Sql_With_IsNotNull()
+        {
+            using var store = GetDocumentStore();
+            using (var session = store.OpenSession())
+            {
+                session.Store(new Product { Id = "1", Name = "P1", Brand = null });
+                session.Store(new Product { Id = "2", Name = "P2", Brand = "B" });
+                session.SaveChanges();
+            }
+
+            using (var session = store.OpenSession())
+            {
+                var filteredProducts = Queries<Product>.FilterBySql(session, "Brand IS NOT NULL").ToList();
+
+                Assert.Single(filteredProducts);
+                Assert.Equal("P2", filteredProducts[0].Name);
+            }
+        }
+
+        [Fact]
+        public void Should_Filter_By_Sql_With_Like_As_Contains()
+        {
+            using var store = GetDocumentStore();
+            using (var session = store.OpenSession())
+            {
+                session.Store(new Product { Id = "1", Name = "Pineapple" });
+                session.Store(new Product { Id = "2", Name = "Apple" });
+                session.Store(new Product { Id = "3", Name = "Banana" });
+                session.SaveChanges();
+            }
+
+            using (var session = store.OpenSession())
+            {
+                var filteredProducts = Queries<Product>.FilterBySql(session, "Name LIKE '%app%'").ToList();
+
+                Assert.Equal(2, filteredProducts.Count);
+                Assert.Contains(filteredProducts, x => x.Name == "Pineapple");
+                Assert.Contains(filteredProducts, x => x.Name == "Apple");
+            }
+        }
+
+        [Fact]
+        public void Should_Filter_By_Sql_With_Like_As_EndsWith()
+        {
+            using var store = GetDocumentStore();
+            using (var session = store.OpenSession())
+            {
+                session.Store(new Product { Id = "1", Name = "Pineapple" });
+                session.Store(new Product { Id = "2", Name = "Apple" });
+                session.Store(new Product { Id = "3", Name = "Banana" });
+                session.SaveChanges();
+            }
+
+            using (var session = store.OpenSession())
+            {
+                var filteredProducts = Queries<Product>.FilterBySql(session, "Name LIKE '%apple'").ToList();
+
+                Assert.Equal(2, filteredProducts.Count);
+                Assert.Contains(filteredProducts, x => x.Name == "Pineapple");
+                Assert.Contains(filteredProducts, x => x.Name == "Apple");
+            }
+        }
     }
 }

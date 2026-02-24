@@ -1,6 +1,8 @@
+using System.Linq.Expressions;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
+using Raven.Client.Documents.Queries;
 using RavenDB.Specifications;
 
 namespace RavenDB.Specifications
@@ -14,7 +16,19 @@ namespace RavenDB.Specifications
             {
                 if (specification != null)
                 {
-                    query = query.Where(specification.ToExpression());
+                    if (specification is ISearchSpecification<T> searchSpec)
+                    {
+                        var parameter = Expression.Parameter(typeof(T), "x");
+                        var property = Expression.Property(parameter, searchSpec.PropertyName);
+                        var conversion = Expression.Convert(property, typeof(object));
+                        var fieldSelector = Expression.Lambda<Func<T, object>>(conversion, parameter);
+
+                        query = query.Search(fieldSelector, searchSpec.SearchTerm, @operator: SearchOperator.And);
+                    }
+                    else
+                    {
+                        query = query.Where(specification.ToExpression());
+                    }
                 }
             }
             return query;
@@ -27,7 +41,19 @@ namespace RavenDB.Specifications
             {
                 if (specification != null)
                 {
-                    query = query.Where(specification.ToExpression());
+                    if (specification is ISearchSpecification<T> searchSpec)
+                    {
+                        var parameter = Expression.Parameter(typeof(T), "x");
+                        var property = Expression.Property(parameter, searchSpec.PropertyName);
+                        var conversion = Expression.Convert(property, typeof(object));
+                        var fieldSelector = Expression.Lambda<Func<T, object>>(conversion, parameter);
+
+                        query = query.Search(fieldSelector, searchSpec.SearchTerm, @operator: SearchOperator.And);
+                    }
+                    else
+                    {
+                        query = query.Where(specification.ToExpression());
+                    }
                 }
             }
             return query.ToAsyncDocumentQuery();

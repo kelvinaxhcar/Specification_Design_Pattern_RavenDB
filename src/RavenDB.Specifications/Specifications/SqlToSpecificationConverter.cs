@@ -111,6 +111,16 @@ namespace RavenDB.Specifications
         {
             leaf = leaf.Trim();
 
+            // Support IS NULL / IS NOT NULL
+            var isNullMatch = Regex.Match(leaf, @"(\w+)\s+IS\s+(NOT\s+)?NULL", RegexOptions.IgnoreCase);
+            if (isNullMatch.Success)
+            {
+                string propertyName = isNullMatch.Groups[1].Value.Trim();
+                bool isNot = isNullMatch.Groups[2].Success;
+                var spec = new IsNullSpecification<T>(propertyName);
+                return isNot ? spec.Not() : spec;
+            }
+
             // Support IN separately
             var inMatch = Regex.Match(leaf, @"(\w+)\s+IN\s*\((.*)\)", RegexOptions.IgnoreCase);
             if (inMatch.Success)
@@ -141,9 +151,31 @@ namespace RavenDB.Specifications
                 "<" => new LessThanSpecification<T>(propertyNameLeaf, value),
                 ">=" => new GreaterThanOrEqualSpecification<T>(propertyNameLeaf, value),
                 "<=" => new LessThanOrEqualSpecification<T>(propertyNameLeaf, value),
-                "LIKE" => new StartsWithSpecification<T>(propertyNameLeaf, value.Replace("%", "")),
+                "LIKE" => ParseLikeCondition<T>(propertyNameLeaf, value),
                 _ => throw new NotSupportedException($"Operator {op} is not supported.")
             };
+        }
+
+        private static Specification<T> ParseLikeCondition<T>(string propertyName, string value)
+        {
+            bool startsWithWildcard = value.StartsWith("%");
+            bool endsWithWildcard = value.EndsWith("%");
+            string cleanValue = value.Replace("%", "");
+
+            if (startsWithWildcard && endsWithWildcard)
+            {
+                return new ContainsSpecification<T>(propertyName, cleanValue);
+            }
+            else if (endsWithWildcard)
+            {
+                return new StartsWithSpecification<T>(propertyName, cleanValue);
+            }
+            else if (startsWithWildcard)
+            {
+                return new EndsWithSpecification<T>(propertyName, cleanValue);
+            }
+            
+            return new EqualitySpecification<T>(propertyName, cleanValue);
         }
 
         private static IEnumerable<string> ParseValueList(string listStr)
